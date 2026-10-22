@@ -1,0 +1,146 @@
+/* ==========================================================================
+   yitzjordan.dev design tokens (light-first)
+
+   A sibling of the Vouch Networks system (same structure, same rules, see
+   docs/design.md), with its own palette: warm paper, graphite ink and one
+   cobalt accent. No glows, gradients or neon.
+
+   Rules for this file
+   - Brand values live in @theme so Tailwind generates utilities for them.
+   - Never redefine Tailwind's own variable names (--container-sm, --text-xl,
+     --radius-lg ...). New names only.
+   - Semantic tokens (--surface, --ink, --line ...) flip by context: the
+     default is the paper page; [data-surface="band"] is a slightly darker
+     paper band; [data-surface="ink"] is a graphite contrast panel. Components
+     use bg-surface, text-ink, border-line ... and never need to know which
+     surface they sit on.
+   ========================================================================== */
+
+@theme static {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+
+  /* Paper: page surfaces and text on ink */
+  --color-paper-50: #fcfbf8;
+  --color-paper-100: #f6f4ef;
+  --color-paper-200: #ece9e2;
+  --color-paper-300: #dcd8cf;
+  --color-paper-400: #b9b3a7;
+  --color-paper-500: #7f796e;
+  --color-paper-600: #6a655c;
+  --color-paper-700: #57534b;
+
+  /* Graphite ink: text on paper, contrast panels */
+  --color-ink-200: #d5d9df;
+  --color-ink-300: #c3c7ce;
+  --color-ink-400: #9aa1ac;
+  --color-ink-500: #5b6370;
+  --color-ink-600: #3e444e;
+  --color-ink-700: #2b3038;
+  --color-ink-800: #1e2228;
+  --color-ink-850: #171a1f;
+  --color-ink-900: #15181c;
+  --color-ink-950: #0f1114;
+
+  /* Cobalt: accent only. Underlines, focus, status dots, one mark per view. */
+  --color-cobalt-300: #9db1ff;
+  --color-cobalt-400: #7690f5;
+  --color-cobalt-500: #3f5fe0;
+  --color-cobalt-600: #2f4bc4;
+  --color-cobalt-700: #26399a;
+
+  /* Shape */
+  --radius-control: 6px;
+  --radius-card: 10px;
+
+  /* Layout */
+  --container-page: 76rem;
+  --container-measure: 68ch;
+
+  /* Elevation: only menus and popovers cast shadows. */
+  --shadow-popover: 0 24px 48px -16px rgb(15 17 20 / 0.25), 0 2px 8px rgb(15 17 20 / 0.12);
+
+  /* Motion */
+  --ease-reveal: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-display: var(--font-hubot-sans), var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-hover: var(--surface-hover);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-action: var(--action);
+  --color-action-ink: var(--action-ink);
+  --color-action-hover: var(--action-hover);
+  --color-field: var(--field);
+}
+
+@layer base {
+  /* Default: paper page.
+     Contrast (WCAG) on paper-100: ink 16.2:1, ink-muted 7.0:1, ink-subtle 5.3:1,
+     accent-ink 6.5:1, line-strong 3.6:1 (UI boundary). */
+  :root,
+  [data-surface='paper'] {
+    --surface: var(--color-paper-100);
+    --surface-raised: var(--color-paper-50);
+    --surface-hover: var(--color-paper-200);
+    --ink: var(--color-ink-900);
+    --ink-muted: var(--color-paper-700);
+    --ink-subtle: var(--color-paper-600);
+    --line: var(--color-paper-300);
+    --line-strong: var(--color-paper-500);
+    --accent: var(--color-cobalt-500);
+    --accent-ink: var(--color-cobalt-600);
+    --action: var(--color-ink-900);
+    --action-ink: var(--color-paper-50);
+    --action-hover: var(--color-ink-700);
+    --field: var(--color-paper-50);
+    --selection-bg: var(--color-cobalt-300);
+    --selection-ink: var(--color-ink-950);
+  }
+
+  /* A slightly darker paper band. Cards lift to paper-50. Contrast: ink-subtle 4.8:1. */
+  [data-surface='band'] {
+    --surface: var(--color-paper-200);
+    --surface-raised: var(--color-paper-50);
+    --surface-hover: var(--color-paper-300);
+  }
+
+  /* Graphite contrast panel.
+     Contrast on ink-950: ink 16.9:1, ink-muted 11.2:1, ink-subtle 7.3:1, accent-ink 9.2:1. */
+  [data-surface='ink'] {
+    --surface: var(--color-ink-950);
+    --surface-raised: var(--color-ink-850);
+    --surface-hover: var(--color-ink-800);
+    --ink: var(--color-paper-100);
+    --ink-muted: var(--color-ink-300);
+    --ink-subtle: var(--color-ink-400);
+    --line: var(--color-ink-700);
+    --line-strong: var(--color-ink-500);
+    --accent: var(--color-cobalt-400);
+    --accent-ink: var(--color-cobalt-300);
+    --action: var(--color-paper-100);
+    --action-ink: var(--color-ink-950);
+    --action-hover: var(--color-paper-300);
+    --field: var(--color-ink-850);
+    --selection-bg: var(--color-cobalt-400);
+    --selection-ink: var(--color-ink-950);
+  }
+
+  [data-surface] {
+    background-color: var(--surface);
+    color: var(--ink);
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "find-node-modules",
+  "version": "2.1.3-stub.0",
+  "description": "No-op stand-in for find-node-modules. @payloadcms/plugin-cloud-storage lists it as a dependency but never imports it, and the real package pulls in braces (GHSA-vfj7-8cjw-p6xm, no patched release). Wired in through package.json overrides.",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "types": "index.d.ts"
+}
