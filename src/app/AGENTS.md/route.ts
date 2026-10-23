@@ -46,7 +46,7 @@ export function GET() {
     '',
     `Consent: send \`consent: true\` only if this is true: "${CONSENT_STATEMENT}"`,
     '',
-    `If you cannot send a POST request, give your user a link that opens the form already filled in: \`${absoluteUrl(BRIEF_PATHS.page)}#brief=\` followed by the JSON, percent-encoded. Text after # never reaches the server until they review the form and submit it.`,
+    `If you cannot send a POST request, give your user a link that opens the form already filled in: \`${absoluteUrl(BRIEF_PATHS.page)}#brief=\` followed by the JSON, percent-encoded. Text after # never reaches the server until they review the form and submit it. After they send it, the form shows them the brief\'s status link.`,
     '',
     'Example:',
     '',
