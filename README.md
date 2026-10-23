@@ -33,11 +33,11 @@ Schema changes go through migrations only (`push: false`). Select fields are Pos
 - **Projects**: `/work/<slug>`, modeled on the vouchnetworks.org product pages, plus engineering notes. `visual` selects a coded diagram from `src/components/pages/work/visuals/`.
 - **Videos**: `/videos/<slug>`, VideoObject data, click-to-load YouTube or uploaded MP4.
 - **Skills** and **Evidence**: the catalog behind `match_requirements`. Every evidence entry must be public and checkable.
-- **Inquiries** and **RequirementTerms**: what agents send. Admin only.
+- **Opportunities**, **Inquiries** and **RequirementTerms**: what agents send (opportunity briefs from hiring teams, other introductions, aggregate requirement terms). Admin only.
 
 ## Agent channel
 
-See `/agents` (or `/AGENTS.md`). No model runs on the server: tools return facts and links, and the visiting agent does the reasoning. `src/lib/agents/tools.ts` is the one data layer behind the MCP server (`/api/mcp`), the REST API (`/api/v1/*`, described by `/openapi.json`) and the Markdown twins.
+See `/agents` (or `/AGENTS.md`). No model runs on the server: tools return facts and links, and the visiting agent does the reasoning. `src/lib/agents/tools.ts` is the one data layer behind the MCP server (`/api/mcp`), the REST API (`/api/v1/*`, described by `/openapi.json`) and the Markdown twins. Opportunity briefs (`src/lib/agents/opportunity*.ts`) arrive through the MCP tool `submit_opportunity`, `POST /api/v1/opportunity` or the form at `/agents/brief`.
 
 ## Environment
 

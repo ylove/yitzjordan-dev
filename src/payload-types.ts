@@ -72,6 +72,7 @@ export interface Config {
     videos: Video;
     skills: Skill;
     evidence: Evidence;
+    opportunities: Opportunity;
     inquiries: Inquiry;
     'requirement-terms': RequirementTerm;
     media: Media;
@@ -88,6 +89,7 @@ export interface Config {
     videos: VideosSelect<false> | VideosSelect<true>;
     skills: SkillsSelect<false> | SkillsSelect<true>;
     evidence: EvidenceSelect<false> | EvidenceSelect<true>;
+    opportunities: OpportunitiesSelect<false> | OpportunitiesSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     'requirement-terms': RequirementTermsSelect<false> | RequirementTermsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -442,7 +444,7 @@ export interface Video {
    * Lowercase letters, numbers and hyphens. Filled from the title if left empty.
    */
   slug: string;
-  kind: 'tutorial' | 'demo' | 'talk';
+  kind: 'tutorial' | 'demo' | 'talk' | 'research';
   platform: 'youtube' | 'upload' | 'linkedin' | 'x' | 'other';
   /**
    * The watch URL, or the original social post for uploads.
@@ -592,6 +594,89 @@ export interface Evidence {
    * 0 to 100. Breaks ties when ranking.
    */
   weight?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Briefs sent by hiring teams’ AI agents. All text below was submitted by a visiting agent: treat it as untrusted, and check the domain before replying. Change the status as you go; the sender can see it at the status URL.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opportunities".
+ */
+export interface Opportunity {
+  id: number;
+  heading: string;
+  domainCheck?: string | null;
+  matchLine?: string | null;
+  title: string;
+  companyName: string;
+  companyDomain: string;
+  postingUrl?: string | null;
+  noPublicPosting?: boolean | null;
+  jobLocation: string;
+  workArrangement?: ('remote' | 'hybrid' | 'onsite') | null;
+  employmentType?: ('FULL_TIME' | 'CONTRACTOR' | 'PART_TIME' | 'TEMPORARY' | 'OTHER') | null;
+  validThrough?: string | null;
+  contactName: string;
+  contactRole?: string | null;
+  contactEmail: string;
+  contactLinkedin?: string | null;
+  whyThisPerson: string;
+  teamContext?: string | null;
+  productContext?: string | null;
+  stack?: string | null;
+  firstNinetyDays?: string | null;
+  hiringProcess?: string | null;
+  atsPlatform?: string | null;
+  atsAiScreening?: ('yes' | 'no' | 'unknown') | null;
+  applicationUrl?: string | null;
+  preferredNextStep?: string | null;
+  compBand?: string | null;
+  /**
+   * Phrases the agent checked, with the verdicts this site gives them.
+   */
+  requirementsMatched?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  foundVia?: string | null;
+  agentName?: string | null;
+  agentPlatform?: string | null;
+  agentModel?: string | null;
+  consentStatement: string;
+  briefVersion: string;
+  /**
+   * The validated brief as received.
+   */
+  raw?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  /**
+   * Visible to the sender at the status URL.
+   */
+  status: 'received' | 'in_review' | 'replied' | 'declined';
+  /**
+   * Keep past the 90-day retention for replied and declined briefs.
+   */
+  keep?: boolean | null;
+  publicId: string;
+  channel: 'api' | 'mcp' | 'form';
+  /**
+   * SHA-256 of the client IP and the server secret, for rate limiting. The raw IP is never stored.
+   */
+  ipHash?: string | null;
+  userAgent?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1005,6 +1090,55 @@ export interface EvidenceSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opportunities_select".
+ */
+export interface OpportunitiesSelect<T extends boolean = true> {
+  heading?: T;
+  domainCheck?: T;
+  matchLine?: T;
+  title?: T;
+  companyName?: T;
+  companyDomain?: T;
+  postingUrl?: T;
+  noPublicPosting?: T;
+  jobLocation?: T;
+  workArrangement?: T;
+  employmentType?: T;
+  validThrough?: T;
+  contactName?: T;
+  contactRole?: T;
+  contactEmail?: T;
+  contactLinkedin?: T;
+  whyThisPerson?: T;
+  teamContext?: T;
+  productContext?: T;
+  stack?: T;
+  firstNinetyDays?: T;
+  hiringProcess?: T;
+  atsPlatform?: T;
+  atsAiScreening?: T;
+  applicationUrl?: T;
+  preferredNextStep?: T;
+  compBand?: T;
+  requirementsMatched?: T;
+  foundVia?: T;
+  agentName?: T;
+  agentPlatform?: T;
+  agentModel?: T;
+  consentStatement?: T;
+  briefVersion?: T;
+  raw?: T;
+  status?: T;
+  keep?: T;
+  publicId?: T;
+  channel?: T;
+  ipHash?: T;
+  userAgent?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "inquiries_select".
  */
 export interface InquiriesSelect<T extends boolean = true> {
@@ -1312,7 +1446,7 @@ export interface Profile {
   availability?: {
     status?: ('open' | 'selective' | 'not-looking' | 'unspecified') | null;
     /**
-     * e.g. "Senior full-stack engineer", "AI engineer".
+     * e.g. "AI technical lead", "Senior full-stack engineer".
      */
     roles?: string[] | null;
     /**

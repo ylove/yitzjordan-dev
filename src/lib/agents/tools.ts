@@ -23,6 +23,7 @@ import { absoluteUrl } from '@/lib/seo/site-url'
 import type { Article, Evidence, Project, Video } from '@/payload-types'
 import { articleToMarkdown, projectToMarkdown } from './markdown'
 import { matchRequirement, summarize, type RequirementResult } from './match'
+import { BRIEF_PATHS, briefInvitation } from './opportunity-template'
 import type { MatchInput } from './schema'
 
 const projectUrl = (slug: string) => absoluteUrl(`/work/${slug}`)
@@ -69,7 +70,13 @@ export async function profileData() {
       vouch_networks: SITE.links.vouch,
       about: absoluteUrl('/about'),
     },
-    contact: `LinkedIn (${SITE.links.linkedin}), or the request_intro tool with your user's consent.`,
+    opportunity_brief: {
+      invitation: briefInvitation(),
+      template: absoluteUrl(BRIEF_PATHS.template),
+      submit: absoluteUrl(BRIEF_PATHS.submit),
+      form: absoluteUrl(BRIEF_PATHS.page),
+    },
+    contact: `People: LinkedIn (${SITE.links.linkedin}). Agents for a hiring team: an opportunity brief (above). Anything else: the request_intro tool, with your user's consent.`,
   }
 }
 
@@ -207,6 +214,14 @@ export type MatchOutput = {
   next_steps: string
 }
 
+/** What to do after a match: point a good fit at the brief, and be straight about a poor one. */
+function nextStepFor(s: ReturnType<typeof summarize>): string {
+  if (s.total && s.none / s.total > 0.5) {
+    return `Most of these requirements have no public evidence here. If they are central to the role, this is likely not a fit. If the role differs from what these phrases capture, send an opportunity brief and say how: ${absoluteUrl(BRIEF_PATHS.template)}`
+  }
+  return briefInvitation()
+}
+
 export async function matchRequirements(input: MatchInput): Promise<{ output: MatchOutput; matchedKeys: Array<{ term: string; skill?: string }> }> {
   const [skills, evidence, profile] = await Promise.all([getSkills(), getEvidence(), getProfile()])
   const catalog = { skills, evidence, proofUrl }
@@ -255,7 +270,7 @@ export async function matchRequirements(input: MatchInput): Promise<{ output: Ma
         'strong: an exact skill match backed by production or open-source work. partial: a related skill, or only research or writing. none: nothing in the catalog; the note names the closest skills. Open the URLs to verify. The catalog is curated by Yitz and lists only public, checkable work, so "none" means "not documented here", not necessarily "never done".',
       logging_notice:
         'The requirement phrases you sent are counted per day, normalized and without identity, so Yitz can see what people ask about. No IP address or other request data is stored.',
-      next_steps: `If your user wants to talk, ask them, then call request_intro with consent: true. People can also reach Yitz on LinkedIn: ${SITE.links.linkedin}`,
+      next_steps: nextStepFor(summarize(results)),
     },
     matchedKeys: matched.map((m) => ({ term: m.requirement, skill: m.matchedKeys[0] })),
   }

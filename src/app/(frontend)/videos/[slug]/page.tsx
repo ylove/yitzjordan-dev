@@ -12,6 +12,7 @@ import { formatDate, formatDuration } from '@/lib/format'
 import { breadcrumbJsonLd, ids, ref, videoJsonLd, webPageJsonLd } from '@/lib/seo/jsonld'
 import { pageMetadata } from '@/lib/seo/metadata'
 import type { Project } from '@/payload-types'
+import { typeset } from '@/components/ui/typeset'
 
 export const revalidate = 3600
 
@@ -69,7 +70,7 @@ export default async function VideoPage({ params }: Params) {
           </div>
           <div className={video.vertical ? 'lg:col-span-7' : 'lg:col-span-4'}>
             <h1 id="page-title" className="text-h2 text-ink">
-              {video.title}
+              {typeset(video.title)}
             </h1>
             <p className="mt-4 text-data text-ink-subtle">
               <time dateTime={video.uploadDate}>{formatDate(video.uploadDate)}</time>

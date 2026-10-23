@@ -220,7 +220,7 @@ export const Profile: GlobalConfig = {
                     { value: 'unspecified', label: 'Do not say' },
                   ],
                 },
-                { name: 'roles', type: 'text', hasMany: true, admin: { description: 'e.g. "Senior full-stack engineer", "AI engineer".' } },
+                { name: 'roles', type: 'text', hasMany: true, admin: { description: 'e.g. "AI technical lead", "Senior full-stack engineer".' } },
                 { name: 'engagements', type: 'text', hasMany: true, admin: { description: 'e.g. "Full-time", "Contract".' } },
                 { name: 'workLocations', type: 'text', hasMany: true, admin: { description: 'e.g. "New York", "Columbus", "Remote (US)".' } },
                 { name: 'note', type: 'textarea' },

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { getRoute, SITE } from '@/content/site'
 import { absoluteUrl, getSiteUrl } from './site-url'
 
-export const DEFAULT_TITLE = 'Yitz Jordan | Full-stack and AI engineer'
+export const DEFAULT_TITLE = 'Yitz Jordan | AI technical lead and full-stack engineer'
 export const TITLE_TEMPLATE = `%s | ${SITE.name}`
 
 /** Site default social images, served by src/app/opengraph-image.tsx and twitter-image.tsx. */
@@ -10,7 +10,7 @@ export const DEFAULT_OG_IMAGE = {
   url: '/opengraph-image',
   width: 1200,
   height: 630,
-  alt: 'Yitz Jordan, full-stack and AI engineer',
+  alt: 'Yitz Jordan, AI technical lead and full-stack engineer',
   type: 'image/png',
 }
 export const DEFAULT_TWITTER_IMAGE = { ...DEFAULT_OG_IMAGE, url: '/twitter-image' }

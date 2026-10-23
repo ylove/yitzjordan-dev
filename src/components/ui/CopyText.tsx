@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react'
 import { cn } from './cn'
 
 /** A single value (a URL, a command) with a copy button and an aria-live confirmation. */
-export function CopyText({ value, label, className }: { value: string; label: string; className?: string }) {
+export function CopyText({ value, label, className, wrap = false }: { value: string; label: string; className?: string; wrap?: boolean }) {
   const [copied, setCopied] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
   useEffect(() => () => clearTimeout(timer.current), [])
@@ -35,7 +35,14 @@ export function CopyText({ value, label, className }: { value: string; label: st
           <span className="sr-only"> {label}</span>
         </button>
       </div>
-      <p className="overflow-x-auto px-4 py-3.5 font-mono text-[0.9375rem] whitespace-nowrap text-ink select-all">{value}</p>
+      <p
+        className={cn(
+          'px-4 py-3.5 text-ink select-all',
+          wrap ? 'text-body whitespace-pre-wrap' : 'overflow-x-auto font-mono text-[0.9375rem] whitespace-nowrap',
+        )}
+      >
+        {value}
+      </p>
       <p aria-live="polite" className="sr-only">
         {copied ? 'Copied to clipboard' : ''}
       </p>

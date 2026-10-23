@@ -72,7 +72,7 @@ export function vouchOrganizationJsonLd(): JsonLdNode {
     '@id': ids.vouch(),
     name: 'Vouch Networks',
     url: SITE.links.vouch,
-    description: 'Vouch Networks builds community safety apps.',
+    description: 'Vouch Networks builds apps that help communities fight and prevent hate crime.',
     founder: personRef(),
     sameAs: [SITE.links.vouch],
   }
@@ -333,6 +333,11 @@ export function isoDuration(seconds: number): string {
 
 export function youtubeThumbnail(id: string): string {
   return `https://i.ytimg.com/vi/${id}/hqdefault.jpg`
+}
+
+/** A 9:16 frame for Shorts (1080x1920); YouTube serves it for every vertical upload. */
+export function youtubeVerticalThumbnail(id: string): string {
+  return `https://i.ytimg.com/vi/${id}/oardefault.jpg`
 }
 
 export function videoJsonLd(video: Video): JsonLdNode {

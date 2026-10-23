@@ -4,13 +4,16 @@ import { TrackedLink } from '@/components/analytics/TrackedLink'
 import { RichText } from '@/components/richtext/RichText'
 import { JsonLd } from '@/components/seo/JsonLd'
 import { Container } from '@/components/ui/Container'
+import { typeset } from '@/components/ui/typeset'
 import { ProjectCard } from '@/components/pages/work/ProjectCard'
+import { ShortsShelf } from '@/components/video/ShortsShelf'
+import { toShortItems } from '@/components/video/short-items'
 import { SITE, articlePath } from '@/content/site'
 import { populated } from '@/lib/cms'
 import { formatDate } from '@/lib/format'
 import { extractHeadings } from '@/lib/richtext/headings'
 import { articleJsonLd, breadcrumbJsonLd, ids, ref, webPageJsonLd } from '@/lib/seo/jsonld'
-import type { Article, Project } from '@/payload-types'
+import type { Article, Project, Video } from '@/payload-types'
 
 /** A research or blog article: header, section nav, body, series link and related work. */
 export function ArticleView({ article }: { article: Article }) {
@@ -22,6 +25,7 @@ export function ArticleView({ article }: { article: Article }) {
   const published = article.publishDate ?? article.createdAt
   const previous = typeof article.previous === 'object' && article.previous?.status === 'published' ? article.previous : null
   const projects = populated<Project>(article.relatedProjects)
+  const shorts = toShortItems(populated<Video>(article.relatedVideos))
 
   return (
     <article aria-labelledby="page-title">
@@ -32,7 +36,7 @@ export function ArticleView({ article }: { article: Article }) {
         </TrackedLink>
         <header className="mt-6 max-w-4xl border-b border-line pb-8">
           <h1 id="page-title" className="text-h1 text-ink">
-            {article.title}
+            {typeset(article.title)}
           </h1>
           <p className="mt-5 max-w-[62ch] text-lead text-ink-muted">{article.excerpt}</p>
           <p className="mt-6 text-data text-ink-subtle">
@@ -86,7 +90,7 @@ export function ArticleView({ article }: { article: Article }) {
                 </p>
               ) : null}
               <p className="max-w-[62ch] text-small text-ink-muted">
-                {SITE.name} is a full-stack and AI engineer and the founder of Vouch Networks.{' '}
+                {SITE.name} is an AI technical lead, a full-stack engineer and the founder of Vouch Networks.{' '}
                 <TrackedLink href="/about" className="text-ink underline decoration-accent underline-offset-4">
                   More about him
                 </TrackedLink>
@@ -112,6 +116,15 @@ export function ArticleView({ article }: { article: Article }) {
                 </li>
               ))}
             </ul>
+          </section>
+        ) : null}
+
+        {shorts.length ? (
+          <section aria-labelledby="related-videos" className="mt-16 border-t border-line pt-10">
+            <h2 id="related-videos" className="text-h3 text-ink">
+              Watch the short version
+            </h2>
+            <ShortsShelf items={shorts} layout="grid" className="mt-6" />
           </section>
         ) : null}
       </Container>

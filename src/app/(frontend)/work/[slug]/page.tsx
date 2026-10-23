@@ -13,6 +13,9 @@ import { CtaPair } from '@/components/ui/CtaPair'
 import { Heading } from '@/components/ui/Heading'
 import { Section } from '@/components/ui/Section'
 import { Terminal } from '@/components/ui/Terminal'
+import { typeset } from '@/components/ui/typeset'
+import { ShortsShelf } from '@/components/video/ShortsShelf'
+import { toShortItems } from '@/components/video/short-items'
 import { VideoCard } from '@/components/video/VideoCard'
 import { CTAS, GITHUB_CTA_LABELS, SITE, type Cta } from '@/content/site'
 import { getProjectBySlug, getSitemapEntries, populated } from '@/lib/cms'
@@ -84,6 +87,8 @@ export default async function ProjectPage({ params }: Params) {
   const path = `/work/${project.slug}`
   const articles = populated<Article>(project.relatedArticles).filter((a) => a.status === 'published')
   const videos = populated<Video>(project.relatedVideos)
+  const shorts = toShortItems(videos.filter((v) => v.vertical))
+  const wide = videos.filter((v) => !v.vertical)
   const arts = project.visual && project.visual !== 'none' ? VISUAL_ARTS[project.visual] : undefined
   const primary = primaryCta(project)
   const softwareNode = projectJsonLd(project)
@@ -98,12 +103,23 @@ export default async function ProjectPage({ params }: Params) {
         secondary={secondaryCta(project)}
         location="work_hero"
         meta={
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="text-h4 text-ink">{project.name}</span>
-            <Badge status={project.status}>{project.statusLabel}</Badge>
-            {project.license ? <span className="text-data text-ink-subtle">{project.license} license</span> : null}
-            {project.language ? <span className="text-data text-ink-subtle">{project.language}</span> : null}
-          </div>
+          <>
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="text-h4 text-ink">{project.name}</span>
+              <Badge status={project.status}>{project.statusLabel}</Badge>
+              {project.license ? <span className="text-data text-ink-subtle">{project.license} license</span> : null}
+              {project.language ? <span className="text-data text-ink-subtle">{project.language}</span> : null}
+            </div>
+            {project.keywords?.length ? (
+              <ul aria-label="Topics" className="mt-4 flex flex-wrap gap-2">
+                {project.keywords.map((k) => (
+                  <li key={k} className="rounded-full border border-line px-2.5 py-0.5 text-data text-ink-muted">
+                    {k}
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </>
         }
       />
 
@@ -138,7 +154,7 @@ export default async function ProjectPage({ params }: Params) {
             {project.figures.map((f) => (
               <div key={f.label} className="border-l border-line pl-5">
                 <dt className="sr-only">{f.label}</dt>
-                <dd className="text-stat text-ink">{f.value}</dd>
+                <dd className="text-stat text-ink">{typeset(f.value)}</dd>
                 <dd className="mt-2 text-small text-ink-muted">{f.label}</dd>
                 {f.source ? (
                   <dd className="mt-1 text-data text-ink-subtle">
@@ -205,9 +221,10 @@ export default async function ProjectPage({ params }: Params) {
               ))}
             </ul>
           ) : null}
-          {videos.length ? (
+          {shorts.length ? <ShortsShelf items={shorts} layout="grid" className="mt-8" /> : null}
+          {wide.length ? (
             <ul className="mt-8 grid gap-8 md:grid-cols-3">
-              {videos.map((v) => (
+              {wide.map((v) => (
                 <li key={v.id}>
                   <VideoCard video={v} />
                 </li>

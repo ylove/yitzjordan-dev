@@ -6,6 +6,7 @@ import { AGENT_PATHS, SURFACES, TOOLS } from '@/content/agents'
 import { DEFAULT_PROFILE } from '@/content/profile'
 import { SITE, STATUS_LABELS, articlePath } from '@/content/site'
 import { articleToMarkdown, experienceLines, projectToMarkdown, videoLine } from '@/lib/agents/markdown'
+import { briefInvitation } from '@/lib/agents/opportunity-template'
 import { getArticles, getArticlesWithBody, getProfile, getProjects, getVideos } from '@/lib/cms'
 import { lexicalToMarkdown } from '@/lib/richtext/markdown'
 import { absoluteUrl } from './site-url'
@@ -18,7 +19,7 @@ export async function buildLlmsTxt(): Promise<string> {
     '',
     `> ${summary}`,
     '',
-    `This file maps ${new URL(absoluteUrl('/')).host} for language models and AI agents. Every page has a Markdown version (add .md to article and /work URLs). The best way for a person to reach Yitz is LinkedIn: ${SITE.links.linkedin}. Agents can also use the MCP server below.`,
+    `This file maps ${new URL(absoluteUrl('/')).host} for language models and AI agents. Every page has a Markdown version (add .md to article and /work URLs). The best way for a person to reach Yitz is LinkedIn: ${SITE.links.linkedin}. Agents can also use the MCP server below. ${briefInvitation()}`,
     '',
     '## About',
     '',
@@ -26,7 +27,7 @@ export async function buildLlmsTxt(): Promise<string> {
     `- [Public résumé (JSON Resume)](${absoluteUrl(AGENT_PATHS.resume)}): work history, skills and projects; no contact details`,
     `- [LinkedIn](${SITE.links.linkedin}): preferred contact`,
     `- [GitHub](${SITE.links.github})`,
-    `- [Vouch Networks](${SITE.links.vouch}): the company he founded, which builds community safety apps`,
+    `- [Vouch Networks](${SITE.links.vouch}): the company he founded, which builds apps that help communities fight and prevent hate crime`,
     '',
   ]
   if (projects.length) {

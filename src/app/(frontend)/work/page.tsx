@@ -20,12 +20,14 @@ export default async function WorkPage() {
     <>
       <Section labelledBy="page-title" spacing="none">
         <div className="pt-14 pb-10 md:pt-20 md:pb-12">
-          <Heading level={1} id="page-title">
-            Work
+          <Heading level={1} id="page-title" className="max-w-[20ch]">
+            Tools for teams putting AI agents to work
           </Heading>
-          <Lead className="mt-6">
-            Tools I build in the open, and the company I founded. Each page covers what it does, who it is for, how to
-            run it, and the engineering decisions behind it.
+          <Lead className="mt-6 max-w-[64ch]">
+            Open-source software for the problems every team hits once AI agents do real work: getting several models to
+            agree on a plan, answers you can verify, coding agents that stay inside policy, and bugs triaged before
+            anyone opens Jira. Each page covers what the tool does, who it is for, how to install it, and the engineering
+            decisions behind it. Vouch Networks, the company I founded, is where most of them began.
           </Lead>
         </div>
       </Section>
@@ -35,8 +37,8 @@ export default async function WorkPage() {
         </h2>
         <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => (
-            <li key={p.id}>
-              <ProjectCard project={p} />
+            <li key={p.id} className={p.schemaType === 'organization' ? 'lg:col-span-2' : undefined}>
+              <ProjectCard project={p} topics />
             </li>
           ))}
         </ul>

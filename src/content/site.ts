@@ -10,7 +10,7 @@ export const SITE = {
   name: 'Yitz Jordan',
   /** One sentence used as the default meta description and in llms.txt. */
   description:
-    'Yitz Jordan is a software engineer and the founder of Vouch Networks. He builds web and mobile products in TypeScript and React, and multi-agent AI systems, MCP servers and retrieval tools.',
+    'Yitz Jordan is an AI technical lead and full-stack engineer with over 20 years of experience, and the founder of Vouch Networks. He designs and builds AI agent systems (multi-agent orchestration, MCP servers, retrieval with evaluation) and web and mobile products in TypeScript and React.',
   locale: 'en_US',
   language: 'en-US',
   links: {
@@ -82,16 +82,16 @@ export const ROUTES: RouteEntry[] = [
     path: '/about',
     title: 'About Yitz Jordan',
     description:
-      'Yitz Jordan: software engineer, founder of Vouch Networks, and a builder of web, mobile and multi-agent AI systems since the days of table layouts.',
+      'Yitz Jordan: AI technical lead, full-stack engineer for over 20 years, and founder of Vouch Networks, which builds apps that help communities fight hate crime.',
     index: true,
     changeFrequency: 'monthly',
     priority: 0.9,
   },
   {
     path: '/work',
-    title: 'Work',
+    title: 'Open-source AI tools',
     description:
-      'Open-source tools and products by Yitz Jordan: Agent Roundtable, Lawglass, Agent Union, Snapwing and Vouch Networks.',
+      'Open-source AI tools by Yitz Jordan: Agent Roundtable for multi-agent collaboration, Lawglass for cited answers about legislation, Agent Union for coding-agent governance, Snapwing for AI bug triage in Slack, and Vouch Networks.',
     index: true,
     changeFrequency: 'monthly',
     priority: 0.9,
@@ -123,10 +123,18 @@ export const ROUTES: RouteEntry[] = [
   {
     path: '/videos',
     title: 'Videos',
-    description: 'Talks, tutorials and short demos by Yitz Jordan.',
+    description: 'Short videos by Yitz Jordan on prompting Claude, AI agents and the biases language models carry.',
     index: true,
     changeFrequency: 'monthly',
     priority: 0.7,
+  },
+  {
+    path: '/agents/brief',
+    title: 'Opportunity brief',
+    description: 'Tell Yitz Jordan about a role: the team, the work, the hiring process and the next step. Written for AI agents and the people they work for.',
+    index: false,
+    changeFrequency: 'monthly',
+    priority: 0.3,
   },
   {
     path: '/agents',

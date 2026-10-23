@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { cn } from './cn'
+import { typeset } from './typeset'
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6
 export type HeadingSize = 'display' | 'h1' | 'h2' | 'h3' | 'h4'
@@ -34,7 +35,7 @@ export function Heading({ level = 2, size, id, className, children }: HeadingPro
   const Tag = `h${level}` as const
   return (
     <Tag id={id} className={cn(sizeClass[size ?? defaultSize[level]], 'text-ink not-italic text-balance', className)}>
-      {children}
+      {typeof children === 'string' ? typeset(children) : children}
     </Tag>
   )
 }

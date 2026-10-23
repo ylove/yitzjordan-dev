@@ -4,6 +4,8 @@
  *   PRIVATE_SEED_DIR=~/prompts-ylove/github-site/seed npx payload run scripts/seed.ts
  *   PRIVATE_SEED_DIR=... npx payload run scripts/seed.ts --only=evidence,profile
  *
+ * Parts: skills, projects, videos, relations (related videos on articles), profile, evidence.
+ *
  * Skills, projects and videos come from scripts/seed-data.ts. The profile and the evidence
  * catalog are personal, so they live outside this public repository, in PRIVATE_SEED_DIR
  * (profile.ts exporting PROFILE, evidence.ts exporting EVIDENCE). Without it, those parts are
@@ -22,7 +24,7 @@ import config from '../src/payload.config'
 import { articleBodyFeatures } from '../src/fields/articleBody'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { PROJECTS, SKILLS, VIDEOS } from './seed-data'
+import { ARTICLE_VIDEOS, PROJECTS, SKILLS, VIDEOS } from './seed-data'
 
 const onlyArg = process.argv.find((a) => a.startsWith('--only='))
 const only = onlyArg ? new Set(onlyArg.slice('--only='.length).split(',')) : null
@@ -74,6 +76,18 @@ if (want('videos')) {
     await upsert(payload, 'videos', 'slug', v.slug, { ...data, skills: idsFor(skillKeys) })
   }
   console.log(`videos: ${VIDEOS.length}`)
+}
+
+// Related videos on articles -----------------------------------------------------
+if (want('relations')) {
+  for (const [articleSlug, videoSlugs] of Object.entries(ARTICLE_VIDEOS)) {
+    const article = (await payload.find({ collection: 'articles', where: { slug: { equals: articleSlug } }, limit: 1, depth: 0, overrideAccess: true })).docs[0]
+    if (!article) continue
+    const videos = await payload.find({ collection: 'videos', where: { slug: { in: videoSlugs } }, limit: videoSlugs.length, depth: 0, overrideAccess: true })
+    const ids = videoSlugs.map((slug) => videos.docs.find((v) => v.slug === slug)?.id).filter((id): id is number => typeof id === 'number')
+    await payload.update({ collection: 'articles', id: article.id, data: { relatedVideos: ids }, overrideAccess: true, context })
+  }
+  console.log(`relations: ${Object.keys(ARTICLE_VIDEOS).length} articles`)
 }
 
 // Profile ----------------------------------------------------------------------

@@ -85,6 +85,7 @@
   --color-action-ink: var(--action-ink);
   --color-action-hover: var(--action-hover);
   --color-field: var(--field);
+  --color-danger: var(--danger);
 }
 
 @layer base {
@@ -107,6 +108,8 @@
     --action-ink: var(--color-paper-50);
     --action-hover: var(--color-ink-700);
     --field: var(--color-paper-50);
+    /* Form errors: 6.2:1 on paper-100. */
+    --danger: #b42318;
     --selection-bg: var(--color-cobalt-300);
     --selection-ink: var(--color-ink-950);
   }
@@ -135,6 +138,7 @@
     --action-ink: var(--color-ink-950);
     --action-hover: var(--color-paper-300);
     --field: var(--color-ink-850);
+    --danger: #fda29b;
     --selection-bg: var(--color-cobalt-400);
     --selection-ink: var(--color-ink-950);
   }

@@ -1,13 +1,14 @@
 import { TrackedLink } from '@/components/analytics/TrackedLink'
 import { formatDate, formatDuration } from '@/lib/format'
-import { youtubeThumbnail } from '@/lib/seo/jsonld'
+import { youtubeThumbnail, youtubeVerticalThumbnail } from '@/lib/seo/jsonld'
 import type { Video } from '@/payload-types'
 
-const KIND_LABELS: Record<Video['kind'], string> = { tutorial: 'Tutorial', demo: 'Demo', talk: 'Talk' }
+export const KIND_LABELS: Record<Video['kind'], string> = { tutorial: 'Tutorial', demo: 'Demo', talk: 'Talk', research: 'Research' }
 
 export function videoPoster(video: Video): string | null {
   if (typeof video.thumbnail === 'object' && video.thumbnail?.url) return video.thumbnail.url
-  return video.youtubeId ? youtubeThumbnail(video.youtubeId) : null
+  if (!video.youtubeId) return null
+  return video.vertical ? youtubeVerticalThumbnail(video.youtubeId) : youtubeThumbnail(video.youtubeId)
 }
 
 /** A video in a grid: poster, kind and length, title. */

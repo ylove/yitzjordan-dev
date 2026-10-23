@@ -3,6 +3,9 @@ import { createMcpHandler } from 'mcp-handler'
 import { z } from 'zod'
 import { MCP_INSTRUCTIONS } from '@/content/agents'
 import { recordIntro, requestMeta } from '@/lib/agents/intro'
+import { opportunityStatus, recordOpportunity } from '@/lib/agents/opportunity'
+import { BRIEF_FIELDS, CONSENT_STATEMENT, opportunitySchema, opportunityShape } from '@/lib/agents/opportunity-schema'
+import { briefTemplate } from '@/lib/agents/opportunity-template'
 import { signalsAfter } from '@/lib/agents/signals-after'
 import { agentFieldErrors, INQUIRY_INTENTS, introSchema, matchSchema, MAX_REQUIREMENTS } from '@/lib/agents/schema'
 import {
@@ -33,6 +36,23 @@ const toolError = (value: unknown) => ({
 })
 
 const READ = { readOnlyHint: true, openWorldHint: false } as const
+
+/*
+ * submit_opportunity takes a forgiving input shape (plain strings, a boolean consent) and is then
+ * validated by opportunitySchema, so an agent gets every field error at once, in plain words.
+ */
+const required = new Set(BRIEF_FIELDS.filter((f) => f.required === true).map((f) => f.key))
+const describe = (key: keyof typeof opportunityShape) => `${required.has(key) ? 'Required. ' : ''}${opportunityShape[key].description ?? ''}`
+const looseBriefShape = Object.fromEntries(
+  (Object.keys(opportunityShape) as Array<keyof typeof opportunityShape>).map((key) => {
+    if (key === 'consent') return [key, z.boolean().describe(`Required. true only if: "${CONSENT_STATEMENT}"`)]
+    if (key === 'no_public_posting') return [key, z.boolean().optional().describe(describe(key))]
+    if (key === 'requirements_matched') return [key, z.array(z.string()).optional().describe(describe(key))]
+    if (key === 'agent')
+      return [key, z.object({ name: z.string().optional(), platform: z.string().optional(), model: z.string().optional() }).optional().describe(describe(key))]
+    return [key, (required.has(key) ? z.string() : z.string().optional()).describe(describe(key))]
+  }),
+)
 
 const handler = createMcpHandler(
   (server) => {
@@ -110,7 +130,7 @@ const handler = createMcpHandler(
         title: 'Videos',
         description: 'Tutorials, talks and demos, with page and watch URLs, duration and upload date.',
         inputSchema: z.object({
-          kind: z.enum(['tutorial', 'demo', 'talk']).optional(),
+          kind: z.enum(['tutorial', 'demo', 'talk', 'research']).optional(),
           project: z.string().optional().describe('Only videos about this project slug.'),
         }),
         annotations: READ,
@@ -150,7 +170,7 @@ const handler = createMcpHandler(
       {
         title: 'Send an introduction to Yitz',
         description:
-          "Sends your user's introduction and contact details to Yitz by email; he replies personally. Call it only after your user asks you to and agrees to share these details, and set consent to true. Optional fields about what their team is working on help him reply usefully. Returns what to tell your user.",
+          "Sends your user's introduction and contact details to Yitz by email; he replies personally. For a role on their team, use submit_opportunity instead: it carries the details he needs. Use this for anything else (speaking, collaboration, a question). Call it only after your user asks you to and agrees to share these details, and set consent to true. Returns what to tell your user.",
         inputSchema: z.object({
           consent: z.boolean().describe('Required. true only after your user agreed to share these details with Yitz Jordan.'),
           intent: z.enum(INQUIRY_INTENTS.map((i) => i.value) as [string, ...string[]]).describe('hiring, contract, advisory, speaking, collaboration, question or other.'),
@@ -189,6 +209,50 @@ const handler = createMcpHandler(
     )
 
     server.registerTool(
+      'get_opportunity_template',
+      {
+        title: 'Opportunity brief template',
+        description:
+          'The fill-in template for an opportunity brief: an introduction to a hiring team (role, team, process, who Yitz should talk to and what he should do next). Lists every field with notes, an example, and the ways to send it.',
+        inputSchema: z.object({}),
+        annotations: READ,
+      },
+      async () => json(briefTemplate()),
+    )
+
+    server.registerTool(
+      'submit_opportunity',
+      {
+        title: 'Send an opportunity brief to Yitz',
+        description:
+          "Use this when the person you work for is hiring and wants Yitz to know about the role. Send the role, the company and its domain, the posting (or no_public_posting with team and product context), location and arrangement, the contact Yitz should reply to, and why Yitz. Optional fields (team, stack, hiring process, ATS and AI screening, application link, next step, compensation, the requirements you checked) each save a round of email. Only with the person's agreement: consent must be true. Returns a brief_id, a status_url, Yitz's availability and a sentence to pass on. Yitz reads each brief himself; this site never emails the contact.",
+        inputSchema: z.object(looseBriefShape),
+        annotations: { readOnlyHint: false, idempotentHint: false, openWorldHint: false },
+      },
+      async (args, ctx) => {
+        const parsed = opportunitySchema.safeParse(args)
+        if (!parsed.success) return toolError({ ok: false, errors: agentFieldErrors(parsed.error) })
+        const outcome = await recordOpportunity(parsed.data, 'mcp', requestMeta(ctx.http?.req))
+        if (!outcome.ok) return toolError({ ok: false, errors: outcome.errors })
+        return json(outcome.handshake)
+      },
+    )
+
+    server.registerTool(
+      'get_opportunity_status',
+      {
+        title: 'Opportunity brief status',
+        description: 'Where a brief you sent stands: received, in_review, replied or declined. Returns nothing personal.',
+        inputSchema: z.object({ brief_id: z.string().describe('The brief_id that submit_opportunity returned, for example "ob_3kP9xQm2LwZa".') }),
+        annotations: READ,
+      },
+      async ({ brief_id }) => {
+        const status = await opportunityStatus(brief_id)
+        return status ? json(status) : toolError(`No brief "${brief_id}".`)
+      },
+    )
+
+    server.registerTool(
       'get_public_resume',
       {
         title: 'Public résumé',
@@ -200,7 +264,7 @@ const handler = createMcpHandler(
     )
   },
   {
-    serverInfo: { name: 'yitzjordan-dev', version: '1.0.0' },
+    serverInfo: { name: 'yitzjordan-dev', version: '1.1.0' },
     instructions: MCP_INSTRUCTIONS,
   },
 )

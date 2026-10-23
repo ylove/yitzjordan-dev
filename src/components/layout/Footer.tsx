@@ -37,7 +37,7 @@ export function Footer() {
         <div className="md:col-span-5">
           <p className="font-display text-h4 text-ink [font-stretch:105%]">{SITE.name}</p>
           <p className="mt-2 max-w-[40ch] text-small text-ink-muted">
-            Software engineer. Founder of Vouch Networks. Writing about how language models behave.
+            AI technical lead and full-stack engineer. Founder of Vouch Networks. Writing about how language models behave.
           </p>
         </div>
         {COLUMNS.map((c) => (

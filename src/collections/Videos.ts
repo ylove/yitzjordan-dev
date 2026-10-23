@@ -61,6 +61,7 @@ export const Videos: CollectionConfig = {
             { value: 'tutorial', label: 'Tutorial' },
             { value: 'demo', label: 'Demo' },
             { value: 'talk', label: 'Talk' },
+            { value: 'research', label: 'Research' },
           ],
         },
         {

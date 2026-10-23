@@ -14,9 +14,13 @@ The site is a sibling of vouchnetworks.org: the same component structure, type s
 
 - No eyebrows: no small label above a heading.
 - No em or en dashes in site copy. Periods, commas and colons.
-- No italics in headings. No emoji. No exclamation marks.
+- No italics in headings. No decorative emoji (Snapwing's reaction emoji are its interface, so its copy shows them). No exclamation marks.
 - Avoid: ship, shipped, measured, seamless, leverage, empower, unlock, cutting-edge, next-gen, robust, world-class, game-changing, synergy, "X, not Y" slogans, numbered section labels, question headlines.
 - First person on pages, specific and plain. Third person only in machine-facing summaries.
-- Evergreen: nothing about looking for a job. Contact is LinkedIn.
+- Evergreen: nothing about looking for a job. Contact is LinkedIn; hiring teams' agents send an opportunity brief (/agents/brief).
 - Honest status labels: "Open source", "In development", the real version number. Every figure on a project page has a source.
 - Authored articles keep their author's punctuation; the dash rule applies to site copy.
+
+## Type
+
+- Hubot Sans draws a barred zero that reads as a theta at heading sizes. `typeset()` (src/components/ui/typeset.tsx) sets digits in Geist and keeps hyphenated words on one line; `Heading` applies it to string children.

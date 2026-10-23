@@ -7,8 +7,8 @@ import { SITE } from './site'
 
 export const DEFAULT_PROFILE = {
   name: SITE.name,
-  jobTitles: ['Full-stack engineer', 'AI engineer'],
-  headline: 'Every layer of the stack. Including the new one.',
+  jobTitles: ['AI technical lead', 'Full-stack engineer'],
+  headline: 'AI technical lead. Over 20 years of full-stack engineering.',
   intro: SITE.description,
   summary: SITE.description,
   aboutMarkdown: '',

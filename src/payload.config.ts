@@ -20,6 +20,7 @@ import { Videos } from './collections/Videos'
 import { Skills } from './collections/Skills'
 import { Evidence } from './collections/Evidence'
 import { Inquiries } from './collections/Inquiries'
+import { Opportunities } from './collections/Opportunities'
 import { RequirementTerms } from './collections/RequirementTerms'
 import { Profile } from './globals/Profile'
 
@@ -60,7 +61,7 @@ export default buildConfig({
 
   editor: lexicalEditor(),
 
-  collections: [Articles, Projects, Videos, Skills, Evidence, Inquiries, RequirementTerms, Media, Users],
+  collections: [Articles, Projects, Videos, Skills, Evidence, Opportunities, Inquiries, RequirementTerms, Media, Users],
 
   globals: [Profile],
 
